@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private MemberRepository memberRepository;
 
     @Autowired
     public BookService(BookRepository bookRepository){
