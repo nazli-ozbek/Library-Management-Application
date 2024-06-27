@@ -2,9 +2,12 @@ package com.example.LibraryApplication.controllers;
 
 import com.example.LibraryApplication.dto.BorrowRequest;
 import com.example.LibraryApplication.dto.BorrowResponse;
+import com.example.LibraryApplication.entities.Book;
 import com.example.LibraryApplication.entities.Borrow;
+import com.example.LibraryApplication.services.BookService;
 import com.example.LibraryApplication.services.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -38,11 +41,10 @@ public class BorrowController {
         }
     }
 
-    @PostMapping("/create")
-    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest) {
+    @PostMapping("/create/{bookid}/{memberid}")
+    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest, @RequestParam int bookid, @RequestParam int memberid ) {
         try {
-            Borrow borrow = new Borrow(borrowRequest.getBook(),borrowRequest.getMember(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
-            Borrow created = borrowService.createBorrow(borrow);
+            Borrow created = borrowService.createBorrow(bookid,memberid,borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
             List<Borrow> list = new ArrayList<>();
             list.add(created);
             return new BorrowResponse("200",list, "Creation successful");

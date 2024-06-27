@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 public class BorrowService {
 
     final BorrowRepository borrowRepository;
+    BookService bookService;
+    MemberService memberService;
 
 
     @Autowired
@@ -44,12 +46,14 @@ public class BorrowService {
         return borrowRepository.findById(id);
     }
 
-    public Borrow createBorrow(Borrow borrow){
-        if(!borrow.getBook().getAvailable()){
+    public Borrow createBorrow(int bookid, int memberid, Date borrowDate, Date returnDate){
+        Book borrowBook = bookService.getBookByID(bookid);
+        Member borrowMember = memberService.getMemberByID(memberid);
+        if(!borrowBook.getAvailable()){
             throw new RuntimeException("Book is not available!");
         }
-        borrow.getBook().setAvailable(false);
-        return borrowRepository.save(borrow);
+        borrowBook.setAvailable(false);
+        return borrowRepository.save(new Borrow(borrowBook,borrowMember,borrowDate,returnDate));
     }
 
     public Borrow updateBorrow(long id, Borrow newBorrow){
