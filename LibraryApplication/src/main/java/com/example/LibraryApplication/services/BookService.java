@@ -37,7 +37,9 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-
+    public Book getBookByID(long id){
+        return bookRepository.findById(id).get();
+    }
 
     public Book createBook(Book book){
         return bookRepository.save(book);

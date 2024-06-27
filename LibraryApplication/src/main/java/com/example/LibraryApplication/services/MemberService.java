@@ -36,8 +36,8 @@ public class MemberService {
     }
 
 
-    public Optional getMemberByID(long id){
-        return memberRepository.findById(id);
+    public Member getMemberByID(long id){
+        return memberRepository.findById(id).get();
     }
 
     public Member createMember(Member member){
