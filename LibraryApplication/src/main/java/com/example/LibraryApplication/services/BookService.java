@@ -4,6 +4,7 @@ import com.example.LibraryApplication.dto.BookRequest;
 import com.example.LibraryApplication.dto.BookResponse;
 import com.example.LibraryApplication.entities.Book;
 import com.example.LibraryApplication.repositories.BookRepository;
+import com.example.LibraryApplication.repositories.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -36,9 +37,7 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    public Optional getBookByID(long id){
-        return bookRepository.findById(id);
-    }
+
 
     public Book createBook(Book book){
         return bookRepository.save(book);
