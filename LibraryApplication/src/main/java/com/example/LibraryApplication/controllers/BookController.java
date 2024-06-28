@@ -55,10 +55,9 @@ public class BookController {
     @DeleteMapping("/delete")
     public BookResponse deleteBook(@RequestBody BookRequest bookRequest) {
         try {
-            Book book = bookService.getBooks(bookRequest.getName(), bookRequest.getAuthor(), bookRequest.getPublisher(), bookRequest.getIsAvailable()).get(0);
             List<Book> list = new ArrayList<>();
-            list.add(book);
-            bookService.deleteBook(book.getId());
+            list.add(bookService.getBookByID(bookRequest.getId()));
+            bookService.deleteBook(bookRequest.getId());
             return new BookResponse("200",list, "Deletion successful");
         } catch (Exception e) {
             return new BookResponse("500",null, "No book found!");

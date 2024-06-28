@@ -55,10 +55,9 @@ public class MemberController {
     @DeleteMapping("/delete")
     public MemberResponse deleteMember(@RequestBody MemberRequest memberRequest) {
         try {
-            Member member = memberService.getMembers(memberRequest.getName(),memberRequest.getSurname(), memberRequest.getPhoneNumber()).get(0);
             List<Member> list = new ArrayList<>();
-            list.add(member);
-            memberService.deleteMember(member.getId());
+            list.add(memberService.getMemberByID(memberRequest.getId()));
+            memberService.deleteMember(memberRequest.getId());
             return new MemberResponse("200",list, "Deletion successful");
         } catch (Exception e) {
             return new MemberResponse("500",null, "Member not found!");
