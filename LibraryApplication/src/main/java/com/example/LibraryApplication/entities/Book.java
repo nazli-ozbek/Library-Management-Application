@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "books")
@@ -20,6 +21,8 @@ public class Book implements Serializable {
     private String publisher;
     @Column(name = "isAvailable")
     private Boolean isAvailable;
+    @OneToMany(mappedBy = "book")
+    private List<Borrow> borrows;
 
 
     public Book(String name, String author, String publisher, Boolean isAvailable) {

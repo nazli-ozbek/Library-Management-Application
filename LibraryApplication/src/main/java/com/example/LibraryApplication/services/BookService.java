@@ -4,7 +4,6 @@ import com.example.LibraryApplication.dto.BookRequest;
 import com.example.LibraryApplication.dto.BookResponse;
 import com.example.LibraryApplication.entities.Book;
 import com.example.LibraryApplication.repositories.BookRepository;
-import com.example.LibraryApplication.repositories.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

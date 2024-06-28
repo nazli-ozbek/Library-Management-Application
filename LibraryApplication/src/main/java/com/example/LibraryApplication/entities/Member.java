@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "members")
@@ -18,6 +19,8 @@ public class Member implements Serializable {
     private String surname;
     @Column(name = "phoneNumber")
     private String phoneNumber;
+    @OneToMany(mappedBy = "member")
+    private List<Borrow> borrows;
 
     public Member(String name, String surname, String phoneNumber){
         this.name = name;

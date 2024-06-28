@@ -41,10 +41,10 @@ public class BorrowController {
         }
     }
 
-    @PostMapping("/create/{bookid}/{memberid}")
-    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest, @RequestParam long bookid, @RequestParam long memberid ) {
+    @PostMapping("/create")
+    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest ) {
         try {
-            Borrow created = borrowService.createBorrow(bookid,memberid,borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
+            Borrow created = borrowService.createBorrow(borrowRequest.getBookId(), borrowRequest.getMemberId(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
             List<Borrow> list = new ArrayList<>();
             list.add(created);
             return new BorrowResponse("200",list, "Creation successful");
