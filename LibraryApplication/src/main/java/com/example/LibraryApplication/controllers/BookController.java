@@ -35,7 +35,7 @@ public class BookController {
         try {
             return bookService.getBooksService(bookRequest);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BookResponse("500",null, "No book found!");
         }
     }
 
@@ -61,7 +61,7 @@ public class BookController {
             bookService.deleteBook(book.getId());
             return new BookResponse("200",list, "Deletion successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BookResponse("500",null, "No book found!");
         }
     }
 
@@ -74,7 +74,7 @@ public class BookController {
             list.add(updated);
             return new BookResponse("200",list, "Update successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BookResponse("500",null, "No book found!");
         }
     }
 

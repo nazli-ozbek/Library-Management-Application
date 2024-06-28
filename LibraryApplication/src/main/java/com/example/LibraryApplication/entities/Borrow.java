@@ -1,5 +1,6 @@
 package com.example.LibraryApplication.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
@@ -13,17 +14,18 @@ public class Borrow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "borrowDate")
-    private Date borrowDate;
-    @Column(name = "returnDate")
-    private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
-
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
+    @Column(name = "borrowDate")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date borrowDate;
+    @Column(name = "returnDate")
+    @JsonFormat(pattern="yyyy-MM-dd")
+    private Date returnDate;
 
     public Borrow(Book book, Member member, Date borrowDate, Date returnDate){
         this.book = book;

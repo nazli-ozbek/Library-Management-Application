@@ -35,7 +35,7 @@ public class MemberController {
         try {
             return memberService.getMembersService(memberRequest);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new MemberResponse("500",null, "Member not found!");
         }
     }
 
@@ -61,7 +61,7 @@ public class MemberController {
             memberService.deleteMember(member.getId());
             return new MemberResponse("200",list, "Deletion successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new MemberResponse("500",null, "Member not found!");
         }
     }
 
@@ -74,7 +74,7 @@ public class MemberController {
             list.add(updated);
             return new MemberResponse("200",list, "Update successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new MemberResponse("500",null, "Member not found!");
         }
     }
 }

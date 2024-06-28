@@ -2,12 +2,9 @@ package com.example.LibraryApplication.controllers;
 
 import com.example.LibraryApplication.dto.BorrowRequest;
 import com.example.LibraryApplication.dto.BorrowResponse;
-import com.example.LibraryApplication.entities.Book;
 import com.example.LibraryApplication.entities.Borrow;
-import com.example.LibraryApplication.services.BookService;
 import com.example.LibraryApplication.services.BorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -37,7 +34,7 @@ public class BorrowController {
         try {
             return borrowService.getBorrowsService(borrowRequest);
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BorrowResponse("500",null, "No borrow found!");
         }
     }
 
@@ -49,20 +46,20 @@ public class BorrowController {
             list.add(created);
             return new BorrowResponse("200",list, "Creation successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BorrowResponse("500",null, "Book is not available!");
         }
     }
 
   @DeleteMapping("/delete")
     public BorrowResponse deleteBorrow(@RequestBody BorrowRequest borrowRequest) {
         try {
-            Borrow borrow = borrowService.getBorrows(borrowRequest.getBookId(),borrowRequest.getMemberId(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate()).get(0);
+            Borrow borrow = borrowService.getBorrowByID(borrowRequest.getId()).get();
             List<Borrow> list = new ArrayList<>();
             list.add(borrow);
-            borrowService.deleteBorrow(borrow.getId());
+            borrowService.deleteBorrow(borrowRequest.getId());
             return new BorrowResponse("200",list, "Deletion successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BorrowResponse("500",null, "Cannot be found!");
         }
     }
 
@@ -74,7 +71,7 @@ public class BorrowController {
             list.add(updated);
             return new BorrowResponse("200",list, "Update successful");
         } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
+            return new BorrowResponse("500",null, "Cannot be found!");
         }
     }
 

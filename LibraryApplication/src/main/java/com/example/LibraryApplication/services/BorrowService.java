@@ -41,12 +41,12 @@ public class BorrowService {
                 .filter(borrow ->
                         (bookId == 0 || Objects.equals(borrow.getBook(), bookService.getBookByID(bookId))) &&
                                 (memberId == 0 || Objects.equals(borrow.getMember(), memberService.getMemberByID(memberId))) &&
-                                (borrowDate == null || Objects.equals(borrow.getBorrowDate(), borrowDate)) &&
-                                (returnDate == null || Objects.equals(borrow.getReturnDate(), returnDate)))
+                                (borrowDate == null || borrowDate.equals(borrow.getBorrowDate())) &&
+                                (returnDate == null || returnDate.equals(borrow.getReturnDate())))
                 .collect(Collectors.toList());
     }
 
-    public Optional getBorrowByID(long id){
+    public Optional<Borrow> getBorrowByID(long id){
         return borrowRepository.findById(id);
     }
 
@@ -84,7 +84,8 @@ public class BorrowService {
         Optional <Borrow> borrowOptional = borrowRepository.findById(id);
         if(borrowOptional.isPresent()){
             Borrow borrow = borrowOptional.get();
-            borrow.getBook().setAvailable(true);
+            if (borrow.getBook() != null){
+            borrow.getBook().setAvailable(true);}
             borrowRepository.deleteById(id);
         }
         else{
