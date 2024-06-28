@@ -42,7 +42,7 @@ public class BorrowController {
     }
 
     @PostMapping("/create/{bookid}/{memberid}")
-    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest, @RequestParam int bookid, @RequestParam int memberid ) {
+    public BorrowResponse createBorrow(@RequestBody BorrowRequest borrowRequest, @RequestParam long bookid, @RequestParam long memberid ) {
         try {
             Borrow created = borrowService.createBorrow(bookid,memberid,borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
             List<Borrow> list = new ArrayList<>();
@@ -53,10 +53,10 @@ public class BorrowController {
         }
     }
 
-    @DeleteMapping("/delete")
+  @DeleteMapping("/delete")
     public BorrowResponse deleteBorrow(@RequestBody BorrowRequest borrowRequest) {
         try {
-            Borrow borrow = borrowService.getBorrows(borrowRequest.getBook(),borrowRequest.getMember(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate()).get(0);
+            Borrow borrow = borrowService.getBorrows(borrowRequest.getBookId(),borrowRequest.getMemberId(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate()).get(0);
             List<Borrow> list = new ArrayList<>();
             list.add(borrow);
             borrowService.deleteBorrow(borrow.getId());
@@ -69,8 +69,7 @@ public class BorrowController {
     @PutMapping("/update")
     public BorrowResponse updateBorrow(@RequestBody BorrowRequest borrowRequest){
         try {
-            Borrow newBorrow = new Borrow(borrowRequest.getBook(),borrowRequest.getMember(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
-            Borrow updated = borrowService.updateBorrow(borrowRequest.getId(),newBorrow);
+            Borrow updated = borrowService.updateBorrow(borrowRequest.getId(), borrowRequest.getBookId(), borrowRequest.getMemberId(), borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
             List<Borrow> list = new ArrayList<>();
             list.add(updated);
             return new BorrowResponse("200",list, "Update successful");

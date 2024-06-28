@@ -12,6 +12,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,26 +20,29 @@ import java.util.stream.Collectors;
 public class BorrowService {
 
     final BorrowRepository borrowRepository;
-    BookService bookService;
-    MemberService memberService;
+    private final BookService bookService;
+    private final MemberService memberService;
 
 
     @Autowired
-    public BorrowService(BorrowRepository borrowRepository){
+    public BorrowService(BorrowRepository borrowRepository, BookService bookService, MemberService memberService){
         this.borrowRepository = borrowRepository;
+        this.bookService = bookService;
+        this.memberService = memberService;
     }
 
     public List<Borrow> getAllBorrows(){
         return borrowRepository.findAll();
     }
 
-    public List<Borrow> getBorrows(Book book, Member member, Date borrowDate, Date returnDate) {
+    public List<Borrow> getBorrows(long bookId, long memberId, Date borrowDate, Date returnDate) {
         List<Borrow> borrows = borrowRepository.findAll();
         return borrows.stream()
-                .filter(borrow -> (book == null || borrow.getBook().equals(book)) &&
-                        (member == null || borrow.getMember().equals(member)) &&
-                        (borrowDate == null || borrow.getBorrowDate().equals(borrowDate)) &&
-                        (returnDate == null || borrow.getReturnDate().equals(returnDate)))
+                .filter(borrow ->
+                        (bookId == 0 || Objects.equals(borrow.getBook(), bookService.getBookByID(bookId))) &&
+                                (memberId == 0 || Objects.equals(borrow.getMember(), memberService.getMemberByID(memberId))) &&
+                                (borrowDate == null || Objects.equals(borrow.getBorrowDate(), borrowDate)) &&
+                                (returnDate == null || Objects.equals(borrow.getReturnDate(), returnDate)))
                 .collect(Collectors.toList());
     }
 
@@ -46,9 +50,9 @@ public class BorrowService {
         return borrowRepository.findById(id);
     }
 
-    public Borrow createBorrow(int bookid, int memberid, Date borrowDate, Date returnDate){
-        Book borrowBook = bookService.getBookByID(bookid);
-        Member borrowMember = memberService.getMemberByID(memberid);
+    public Borrow createBorrow(long bookId, long memberId, Date borrowDate, Date returnDate){
+        Book borrowBook = bookService.getBookByID(bookId);
+        Member borrowMember = memberService.getMemberByID(memberId);
         if(!borrowBook.getAvailable()){
             throw new RuntimeException("Book is not available!");
         }
@@ -56,18 +60,18 @@ public class BorrowService {
         return borrowRepository.save(new Borrow(borrowBook,borrowMember,borrowDate,returnDate));
     }
 
-    public Borrow updateBorrow(long id, Borrow newBorrow){
+    public Borrow updateBorrow(long id, long bookId, long memberId, Date borrowDate, Date returnDate){
         Optional <Borrow> oldBorrowOptional = borrowRepository.findById(id);
         if(oldBorrowOptional.isPresent()){
             Borrow oldBorrow = oldBorrowOptional.get();
-            if(!ObjectUtils.isEmpty(newBorrow.getBook())){
-            oldBorrow.setBook(newBorrow.getBook());}
-            if(!ObjectUtils.isEmpty(newBorrow.getMember())){
-            oldBorrow.setMember(newBorrow.getMember());}
-            if(!ObjectUtils.isEmpty(newBorrow.getBorrowDate())){
-            oldBorrow.setBorrowDate(newBorrow.getBorrowDate());}
-            if(!ObjectUtils.isEmpty(newBorrow.getReturnDate())){
-            oldBorrow.setReturnDate(newBorrow.getReturnDate());}
+            if(bookId != 0){
+            oldBorrow.setBook(bookService.getBookByID(bookId));}
+            if(memberId != 0){
+            oldBorrow.setMember(memberService.getMemberByID(memberId));}
+            if(borrowDate != null){
+            oldBorrow.setBorrowDate(borrowDate);}
+            if(returnDate != null){
+            oldBorrow.setReturnDate(returnDate);}
 
             return borrowRepository.save(oldBorrow);
         }
@@ -77,8 +81,10 @@ public class BorrowService {
     }
 
     public void deleteBorrow(long id){
-        if(borrowRepository.existsById(id)){
-            borrowRepository.findById(id).get().getBook().setAvailable(true);
+        Optional <Borrow> borrowOptional = borrowRepository.findById(id);
+        if(borrowOptional.isPresent()){
+            Borrow borrow = borrowOptional.get();
+            borrow.getBook().setAvailable(true);
             borrowRepository.deleteById(id);
         }
         else{
@@ -87,7 +93,7 @@ public class BorrowService {
     }
 
     public BorrowResponse getBorrowsService(BorrowRequest borrowRequest){
-        List<Borrow> resultBorrows = getBorrows(borrowRequest.getBook(),borrowRequest.getMember(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
+        List<Borrow> resultBorrows = getBorrows(borrowRequest.getBookId(),borrowRequest.getMemberId(),borrowRequest.getBorrowDate(),borrowRequest.getReturnDate());
         if(resultBorrows.isEmpty()){
             return new BorrowResponse("200", null, "Borrows cannot be found!");
         }

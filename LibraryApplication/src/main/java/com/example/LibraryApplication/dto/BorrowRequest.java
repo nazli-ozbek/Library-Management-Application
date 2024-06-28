@@ -10,6 +10,8 @@ import java.util.Date;
 
 public class BorrowRequest {
     private int id;
+    private int bookId;
+    private int memberId;
     private Book book;
     private Member member;
     private Date borrowDate;
