@@ -1,6 +1,5 @@
 package com.example.LibraryApplication.controllers;
 
-import com.example.LibraryApplication.dto.BookResponse;
 import com.example.LibraryApplication.dto.MemberRequest;
 import com.example.LibraryApplication.dto.MemberResponse;
 import com.example.LibraryApplication.entities.Member;

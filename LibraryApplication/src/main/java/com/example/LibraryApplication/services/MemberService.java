@@ -2,7 +2,6 @@ package com.example.LibraryApplication.services;
 
 import com.example.LibraryApplication.dto.MemberRequest;
 import com.example.LibraryApplication.dto.MemberResponse;
-import com.example.LibraryApplication.entities.Book;
 import com.example.LibraryApplication.entities.Member;
 import com.example.LibraryApplication.repositories.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
